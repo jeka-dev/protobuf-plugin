@@ -68,8 +68,8 @@ To use specific proto files, rather than an entire directory:
 ```java
 public void protobuf() {
     JkProtobuf.of(this)
-        .withProtoFiles(JkFileTree.of(build.file("my/proto/dir").andFilter(JkFileFiler.include("thisOne.proto"))))
-        .andProtoFiles(JkFileTree.of(build.file("my/other/proto/dir").andFilter(JKFileFilder.include("anotherOne.proto"))))
+        .withProtoFiles(baseDir().from("my/proto/dir").include("thisOne.proto"))
+        .andProtoFiles(baseDir().from("my/other/proto/dir").include("anotherOne.proto"))
         .compile();
 }
 ```
