@@ -58,7 +58,7 @@ You can change the defaults by configuring your `JkProtobuf` instance.
 ```java
 public void protobuf() {
     JkProtobuf.of(this)
-        .withProtoFiles(JkFileTree.of(build.file("my/proto/dir")))
+        .withProtoFiles(baseDir().from("my/proto/dir"))
         .compile();
 }
 ```
