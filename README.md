@@ -88,7 +88,7 @@ JkJavaBuild otherProject;
 
 public void protobuf() {
     JkProtobuf.of(this)
-        .andProtoDirs(otherProject.baseDir().file("path/to/proto"))
+        .andProtoDirs(otherProject.baseDir().from("path/to/proto"))
         .compile();
 }
 ```
