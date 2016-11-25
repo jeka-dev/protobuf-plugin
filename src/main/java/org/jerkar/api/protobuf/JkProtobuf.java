@@ -19,6 +19,8 @@ import org.jerkar.tool.builtins.javabuild.JkJavaBuild;
 
 public class JkProtobuf {
 
+    private static final String DefaultProtoDir = "src/main/proto";
+
     /**
      * Initializes a <code>JkProtobuf</code> using default settings
      */
@@ -38,7 +40,7 @@ public class JkProtobuf {
         this.protocCommand = "protoc";
         this.workingDir = build.baseDir().root();
         this.protoDirs = JkFileTreeSet.empty();
-        this.protoFiles = JkFileTreeSet.of(build.file("proto"));
+        this.protoFiles = JkFileTreeSet.of(build.file(DefaultProtoDir));
         this.tempDir = build.ouputDir("proto");
         this.javaDir = build.generatedSourceDir();
         this.extraArgs = new ArrayList<String>();
@@ -73,6 +75,14 @@ public class JkProtobuf {
      */
     public JkProtobuf andProtoDir(File dir) {
         return andProtoDirs(dir);
+    }
+    
+    /**
+     * Add the src/main/proto directory from another project to lookup .proto files.
+     * To use a different project, use {@link andProtoDirs(JkFileTreeSet)} instead.
+     */
+    public JkProtobuf andProtoDir(JkJavaBuild build) {
+        return andProtoDir(build.file(DefaultProtoDir));
     }
     
     /**

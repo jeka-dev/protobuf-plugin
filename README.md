@@ -20,7 +20,8 @@ TODO: actually publish library to repo somewhere!
 
 After adding the import, make sure to update your IDE's classpath.
 
-Make a method to run the protobuf compiler.
+Make a method to run the protobuf compiler. You can run this method as a jerkar task to compile `.proto` files
+after you've edited them.
 
 ```java
 public void protobuf() {
@@ -28,7 +29,7 @@ public void protobuf() {
 }
 ```
 
-Override the `compile` method to run the protobuf compiler before the java compiler.
+Also override the `compile` method to run the protobuf compiler before the java compiler.
 
 ```java
 @Override
@@ -38,21 +39,13 @@ public void compile() {
 }
 ```
 
-Make a task to run the protobuf compiler after you edit `.proto` files.
-
-```java
-public void doProtobuf() {
-    protobuf();
-}
-```
-
 `JkProtobuf` will write the generated java sources to the `build/output/generated-sources/java` directory by default.
 Make sure to update your IDE classpath to include that directory.
 
 
 ## Configuring `JkProtobuf`
 
-By default, `JkProtobuf` looks for `*.proto` files in the `proto` folder of your project.
+By default, `JkProtobuf` looks for `*.proto` files in the `src/main/proto` folder of your project.
 You can change the defaults by configuring your `JkProtobuf` instance.
 
 ```java
@@ -74,7 +67,7 @@ public void protobuf() {
 }
 ```
 
-If your proto files reference definitions from another project, you can specify other proto directories too.
+If your proto files reference definitions from another project, you can specify other proto directories too:
 
 ```java
 @JkProject("../other/project")
@@ -82,7 +75,20 @@ JkJavaBuild otherProject;
 
 public void protobuf() {
     JkProtobuf.of(this)
-        .andProtoDirs(otherProject.baseDir().file("proto"))
+        .andProtoDirs(otherProject) // uses default src/main/proto directory
+        .compile();
+}
+```
+
+or
+
+```java
+@JkProject("../other/project")
+JkJavaBuild otherProject;
+
+public void protobuf() {
+    JkProtobuf.of(this)
+        .andProtoDirs(otherProject.baseDir().file("path/to/proto"))
         .compile();
 }
 ```
