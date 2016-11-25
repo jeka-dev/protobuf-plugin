@@ -10,7 +10,7 @@ First, [Make sure jerkar is installed](http://jerkar.github.io/documentation/lat
 Then add the `JkImport` annotation to your Build script.
 
 ```java
-@JkImport("org.jerkar:protobuf:1.0")
+@JkImport("org.jerkar:protobuf-plugin:1.0")
 public class Build extends JkJavaBuild {
     ...
 }

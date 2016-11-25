@@ -20,17 +20,12 @@ public class Build extends JkJavaBuild {
 
     @Override
     public JkModuleId moduleId() {
-        return JkModuleId.of("org.jerkar", "protobuf-pluggin");
+        return JkModuleId.of("org.jerkar", "protobuf-plugin");
     }
 
     @Override
     public JkVersion version() {
         return JkVersion.ofName("1.0-SNAPHOT");  
-    }
-
-    @Override
-    public String javaSourceVersion() {
-        return "1.6"; // It's not necessary to stick with V6
     }
 
     @Override
@@ -44,7 +39,7 @@ public class Build extends JkJavaBuild {
                 .of("Jerkar plugin for protobuffer", "A Jerkar plugin for Google Protobuffer",
                         "http://jerkar.github.io")
                 .withScm("https://github.com/jerkar/protobuf-plugin.git").andApache2License()
-                .andGitHubDeveloper("cuchaz", "cuchaz").andGitHubDeveloper("djeang", "djeangdev@yahoo.fr"));
+                .andGitHubDeveloper("cuchaz", "cuchaz@gmail.com").andGitHubDeveloper("djeang", "djeangdev@yahoo.fr"));
     }
 
     @Override
