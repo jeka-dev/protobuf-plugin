@@ -11,6 +11,10 @@ import org.jerkar.tool.JkOptions;
 import org.jerkar.tool.builtins.javabuild.JkJavaBuild;
 
 public class Build extends JkJavaBuild {
+    
+    {
+        this.pack.javadoc = true;
+    }
 
     public boolean publishOssrh;
 
