@@ -1,22 +1,18 @@
 package org.jerkar.api.protobuf;
 
-import org.jerkar.CoreBuild;
 import org.jerkar.api.depmanagement.JkDependencies;
 import org.jerkar.api.depmanagement.JkMavenPublication;
 import org.jerkar.api.depmanagement.JkMavenPublicationInfo;
 import org.jerkar.api.depmanagement.JkModuleId;
+import org.jerkar.api.depmanagement.JkPopularModules;
 import org.jerkar.api.depmanagement.JkPublishRepos;
 import org.jerkar.api.depmanagement.JkVersion;
 import org.jerkar.tool.JkOptions;
-import org.jerkar.tool.JkProject;
 import org.jerkar.tool.builtins.javabuild.JkJavaBuild;
 
 public class Build extends JkJavaBuild {
 
     public boolean publishOssrh;
-
-    @JkProject("../jerkar/org.jerkar.core")
-    private CoreBuild core;
 
     @Override
     public JkModuleId moduleId() {
@@ -25,12 +21,14 @@ public class Build extends JkJavaBuild {
 
     @Override
     public JkVersion version() {
-        return JkVersion.ofName("1.0-SNAPHOT");  
+        return JkVersion.ofName("0.5");  
     }
 
     @Override
     protected JkDependencies dependencies() {
-        return JkDependencies.of(PROVIDED, core.asDependency(core.packer().jarFile()));
+        return JkDependencies.builder()
+                .on(JkPopularModules.JERKAR_CORE, "0.4.6")
+                .build();
     }
 
     @Override

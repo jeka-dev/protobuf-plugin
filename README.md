@@ -1,3 +1,4 @@
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jerkar/protobuf-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jerkar/protobuf-plugin) <br/>
 
 # Jerkar library for Protobuf
 
@@ -10,7 +11,7 @@ First, [Make sure jerkar is installed](http://jerkar.github.io/documentation/lat
 Then add the `JkImport` annotation to your Build script.
 
 ```java
-@JkImport("org.jerkar:protobuf-plugin:1.0")
+@JkImport("org.jerkar:protobuf-plugin:0.5")
 public class Build extends JkJavaBuild {
     ...
 }
