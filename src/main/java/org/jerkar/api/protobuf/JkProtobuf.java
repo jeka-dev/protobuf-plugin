@@ -183,6 +183,16 @@ public class JkProtobuf {
      */
     public void compile() {
     
+        // remind user of the args
+        JkLog.info("Running protoc with :"
+            + "\n\tcommand=" + protocCommand
+            + "\n\tworking dir=" + workingDir
+            + "\n\tproto dirs=" + protoDirs
+            + "\n\tproto files=" + protoFiles
+            + "\n\tjava dir=" + javaDir
+            + "\n\textra args=" + extraArgs
+        );
+    
         // create dirs if needed
         this.tempDir.mkdirs();
         this.javaDir.mkdirs();
