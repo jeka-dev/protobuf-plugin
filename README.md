@@ -17,29 +17,17 @@ public class Build extends JkJavaBuild {
 }
 ```
 
-TODO: actually publish library to repo somewhere!
-
 After adding the import, make sure to update your IDE's classpath.
-
-Make a method to run the protobuf compiler. You can run this method as a jerkar task to compile `.proto` files
-after you've edited them.
+Then override the `generateSources` method so the protobuf compiler always runs before the java compiler in Jerkar builds.
 
 ```java
-public void protobuf() {
+@Override
+public void generateSources() {
     JkProtobuf.of(this).compile();
 }
 ```
 
-Also override the `compile` method to run the protobuf compiler before the java compiler.
-
-```java
-@Override
-public void compile() {
-    protobuf();
-    super.compile();
-}
-```
-
+You can also run this `generateSources` as a Jerkar task to compile `.proto` files after you've edited them in your IDE.
 `JkProtobuf` will write the generated java sources to the `build/output/generated-sources/java` directory by default.
 Make sure to update your IDE classpath to include that directory.
 
