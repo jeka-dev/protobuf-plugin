@@ -184,13 +184,14 @@ public class JkProtobuf {
     public void compile() {
     
         // remind user of the args
-        JkLog.info("Running protoc with :"
-            + "\n\tcommand=" + protocCommand
-            + "\n\tworking dir=" + workingDir
-            + "\n\tproto dirs=" + protoDirs
-            + "\n\tproto files=" + protoFiles
-            + "\n\tjava dir=" + javaDir
-            + "\n\textra args=" + extraArgs
+    	JkLog.startln("Compiling protobuffer files");
+        JkLog.info("Running protoc with :",
+            "\tcommand=" + protocCommand,
+            "\tworking dir=" + workingDir,
+            "\tproto dirs=" + protoDirs,
+            "\tproto files=" + protoFiles,
+            "\tjava dir=" + javaDir,
+            "\textra args=" + extraArgs
         );
     
         // create dirs if needed
@@ -203,7 +204,7 @@ public class JkProtobuf {
             .failOnError(true)
             .runSync();
         
-        // add generated annotations to generated files to suppress java compiler warnings
+        JkLog.info("Adding annotation to suppress java compiler warnings");
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
         dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         String dateString = dateFormat.format(new Date());
@@ -220,6 +221,7 @@ public class JkProtobuf {
         // move the altered java files to the java dir and cleanup
         javaFiles.copyTo(javaDir);
         JkUtilsFile.deleteDir(tempDir);
+        JkLog.done();
     }
     
     private String[] makeArgs() {
