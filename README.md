@@ -6,7 +6,9 @@ This provides a library to use the [protobuf](https://developers.google.com/prot
 
 ## How to use
 
-First, [Make sure jerkar is installed](http://jerkar.github.io/documentation/latest/getting_started.html)
+First, [Make sure jerkar is installed](http://jerkar.github.io/documentation/latest/getting_started.html).
+
+[Protobuff compiler] (https://developers.google.com/protocol-buffers/docs/downloads) should be installed as well.
 
 Then add the `JkImport` annotation to your Build script.
 
@@ -38,7 +40,7 @@ By default, `JkProtobuf` looks for `*.proto` files in the `src/main/proto` folde
 You can change the defaults by configuring your `JkProtobuf` instance.
 
 ```java
-public void protobuf() {
+public void generateSources() {
     JkProtobuf.of(this)
         .withProtoFiles(baseDir().from("my/proto/dir"))
         .compile();
@@ -48,7 +50,7 @@ public void protobuf() {
 To use specific proto files, rather than an entire directory:
 
 ```java
-public void protobuf() {
+public void generateSources() {
     JkProtobuf.of(this)
         .withProtoFiles(baseDir().from("my/proto/dir").include("thisOne.proto"))
         .andProtoFiles(baseDir().from("my/other/proto/dir").include("anotherOne.proto"))
@@ -62,7 +64,7 @@ If your proto files reference definitions from another project, you can specify 
 @JkProject("../other/project")
 JkJavaBuild otherProject;
 
-public void protobuf() {
+public void generateSources() {
     JkProtobuf.of(this)
         .andProtoDirs(otherProject) // uses default src/main/proto directory
         .compile();
@@ -75,7 +77,7 @@ or
 @JkProject("../other/project")
 JkJavaBuild otherProject;
 
-public void protobuf() {
+public void generateSources() {
     JkProtobuf.of(this)
         .andProtoDirs(otherProject.baseDir().from("path/to/proto"))
         .compile();
@@ -97,7 +99,7 @@ public void protobuf() {
 Any other tweaking to the `protoc` command line invocation can be done by adding extra arguments.
 
 ```java
-public void protobuf() {
+public void generateSources() {
     JkProtobuf.of(this)
         .withExtraArgs("--include_source_info")
         .compile();
