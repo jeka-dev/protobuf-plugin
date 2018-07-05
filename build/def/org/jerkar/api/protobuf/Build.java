@@ -1,57 +1,41 @@
 package org.jerkar.api.protobuf;
 
-import org.jerkar.api.depmanagement.JkDependencies;
-import org.jerkar.api.depmanagement.JkMavenPublication;
+import org.jerkar.api.depmanagement.JkDependencySet;
 import org.jerkar.api.depmanagement.JkMavenPublicationInfo;
-import org.jerkar.api.depmanagement.JkModuleId;
 import org.jerkar.api.depmanagement.JkPopularModules;
 import org.jerkar.api.depmanagement.JkPublishRepos;
-import org.jerkar.api.depmanagement.JkVersion;
 import org.jerkar.tool.JkOptions;
-import org.jerkar.tool.builtins.javabuild.JkJavaBuild;
+import org.jerkar.tool.builtins.java.JkJavaProjectBuild;
+import org.jerkar.tool.builtins.repos.JkPluginPgp;
 
-public class Build extends JkJavaBuild {
-    
-    {
-        this.pack.javadoc = true;
-    }
+public class Build extends JkJavaProjectBuild {
 
     public boolean publishOssrh;
 
     @Override
-    public JkModuleId moduleId() {
-        return JkModuleId.of("org.jerkar", "protobuf-plugin");
+    protected void configurePlugins() {
+        super.configurePlugins();
+        project().setVersionedModule( "org.jerkar:protobuf-plugin", "0.6_SNAPSHOT");
+        project().setDependencies(JkDependencySet.of().and(JkPopularModules.JERKAR_CORE, "0.7.+"));
+        project().setMavenPublicationInfo(mavenPublication());
+        project().maker().setPublishRepos(publishRepositories());
     }
 
-    @Override
-    public JkVersion version() {
-        return JkVersion.ofName("0.5");  
-    }
-
-    @Override
-    protected JkDependencies dependencies() {
-        return JkDependencies.builder()
-                .on(JkPopularModules.JERKAR_CORE, "0.4.6")
-                .build();
-    }
-
-    @Override
-    protected JkMavenPublication mavenPublication() {
-        return super.mavenPublication().with(JkMavenPublicationInfo
-                .of("Jerkar plugin for protobuffer", "A Jerkar plugin for Google Protobuffer",
+    private JkMavenPublicationInfo mavenPublication() {
+        return JkMavenPublicationInfo.of("Jerkar plugin for protobuffer", "A Jerkar plugin for Google Protobuffer",
                         "http://jerkar.github.io")
                 .withScm("https://github.com/jerkar/protobuf-plugin.git").andApache2License()
-                .andGitHubDeveloper("cuchaz", "cuchaz@gmail.com").andGitHubDeveloper("djeang", "djeangdev@yahoo.fr"));
+                .andGitHubDeveloper("cuchaz", "cuchaz@gmail.com")
+                .andGitHubDeveloper("djeang", "djeangdev@yahoo.fr");
     }
 
-    @Override
-    protected JkPublishRepos publishRepositories() {
+    private JkPublishRepos publishRepositories() {
         if (publishOssrh) {
             return JkPublishRepos
                     .ossrh(JkOptions.get("repo.ossrh.username"), 
-                            JkOptions.get("repo.ossrh.password"), pgp())
+                            JkOptions.get("repo.ossrh.password"), this.plugins().get(JkPluginPgp.class).get())
                     .withUniqueSnapshot(true);
         }
-        return super.publishRepositories();
+        return JkPublishRepos.local();
     }
 }
