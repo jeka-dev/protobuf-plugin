@@ -5,6 +5,7 @@ import org.jerkar.api.depmanagement.JkMavenPublicationInfo;
 import org.jerkar.api.depmanagement.JkPopularModules;
 import org.jerkar.api.depmanagement.JkRepoSet;
 import org.jerkar.api.java.project.JkJavaProject;
+import org.jerkar.tool.JkInit;
 import org.jerkar.tool.JkRun;
 import org.jerkar.tool.builtins.java.JkPluginJava;
 
@@ -22,6 +23,11 @@ public class Build extends JkRun {
         project.setVersionedModule( "org.jerkar:protobuf-plugin", "0.7.0-SNAPSHOT");
         project.setDependencies(JkDependencySet.of().and(JkPopularModules.JERKAR_CORE, "0.7.0.RC1"));
         project.setMavenPublicationInfo(mavenPublication());
+    }
+
+    @Override
+    public void setupAfterPluginActivation() {
+        JkJavaProject project = javaPlugin.getProject();
         project.getMaker().getTasksForPublishing().setPublishRepos(JkRepoSet.ofOssrhSnapshotAndRelease(ossrhUsername, ossrhPwd));
     }
 
@@ -31,6 +37,12 @@ public class Build extends JkRun {
                 .withScm("https://github.com/jerkar/protobuf-plugin.git").andApache2License()
                 .andGitHubDeveloper("cuchaz", "cuchaz@gmail.com")
                 .andGitHubDeveloper("djeang", "djeangdev@yahoo.fr");
+    }
+
+    public static void main(String[] args) {
+        Build build = JkInit.instanceOf(Build.class, args);
+        build.javaPlugin.clean().pack();
+        build.javaPlugin.publish();
     }
 
 
