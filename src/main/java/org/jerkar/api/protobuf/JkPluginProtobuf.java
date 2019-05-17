@@ -7,9 +7,9 @@ import org.jerkar.api.system.JkProcess;
 import org.jerkar.api.utils.JkUtilsPath;
 import org.jerkar.api.utils.JkUtilsString;
 import org.jerkar.api.utils.JkUtilsTime;
-import org.jerkar.tool.JkBuild;
 import org.jerkar.tool.JkDoc;
 import org.jerkar.tool.JkPlugin;
+import org.jerkar.tool.JkRun;
 import org.jerkar.tool.builtins.java.JkPluginJava;
 
 import java.nio.charset.Charset;
@@ -32,23 +32,24 @@ public class JkPluginProtobuf extends JkPlugin {
     private final JkPluginJava java;
 
 
-    protected JkPluginProtobuf(JkBuild build) {
+    protected JkPluginProtobuf(JkRun build) {
         super(build);
-        this.java = build.plugins().get(JkPluginJava.class);
+        this.java = build.getPlugin(JkPluginJava.class);
     }
 
     @JkDoc("Add protocol buffer source generation to the Java Project Maker. " +
             "The source generation will be automatically run prior compilation phase.")
     @Override
-    protected void decorateBuild() {
-        JkPathTree protoFiles = build.baseTree().goTo(protoFilePath);
+    protected void activate() {
+        JkPathTree protoFiles = getRun().getBaseTree().goTo(protoFilePath);
         String[] extraArguments = JkUtilsString.translateCommandline(extraArgs);
-        java.project().maker().sourceGenerator.chain(() -> {
+        java.getProject().getMaker().getTasksForCompilation().getPreCompile().chain(() -> {
             long start = System.nanoTime();
             JkLog.startTask("Compiling protocol buffer files.");
             JkLog.startTask("Generating ");
-            compile(protoFiles, java.project().getOutLayout().generatedSourceDir(), Arrays.asList(extraArguments),
-                    Charset.forName(java.project().getCompileSpec().getEncoding()));
+            compile(protoFiles, java.getProject().getMaker().getOutLayout().getGeneratedSourceDir(),
+                    Arrays.asList(extraArguments),
+                    Charset.forName(java.getProject().getCompileSpec().getEncoding()));
             JkLog.endTask("Done is " + JkUtilsTime.durationInMillis(start) + " milliseconds.");
         });
     }
@@ -60,8 +61,8 @@ public class JkPluginProtobuf extends JkPlugin {
 
     public static void compile(JkPathTree protoFiles, Path javaOut, List<String> extraArgs, Charset sourceCharset) {
         Path tempDir = JkUtilsPath.createTempDirectory("jkprotoc");
-        JkProcess.of(PROTOC_COMMAND, makeArgs(protoFiles, protoFiles.root(), tempDir, extraArgs))
-                .failOnError(true)
+        JkProcess.of(PROTOC_COMMAND, makeArgs(protoFiles, protoFiles.getRoot(), tempDir, extraArgs))
+                .withFailOnError(true)
                 .runSync();
 
         final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
@@ -70,8 +71,8 @@ public class JkPluginProtobuf extends JkPlugin {
         String annotations = "@javax.annotation.Generated(value=\"com.google.protobuf\", date=\"" + dateString + "\")"
                 + "\n@SuppressWarnings(\"all\")";
 
-        JkPathTree javaFiles = JkPathTree.of(tempDir).andMatcher(JkPathMatcher.accept("**/*.java"));
-        List<Path> files = javaFiles.files();
+        JkPathTree javaFiles = JkPathTree.of(tempDir).andMatcher(JkPathMatcher.of("**/*.java"));
+        List<Path> files = javaFiles.getFiles();
         for (Path file : files) {
             String source = new String(JkUtilsPath.readAllBytes(file), sourceCharset);
             source = source.replace("public final class", annotations + "\npublic final class");
@@ -88,7 +89,7 @@ public class JkPluginProtobuf extends JkPlugin {
         List<String> args = new ArrayList<String>();
         args.add("--proto_path=" + protoPath.normalize().toString());
         args.add("--java_out=" + javaOut.normalize().toString());
-        for (Path file : protoFiles.files()) {
+        for (Path file : protoFiles.getFiles()) {
             args.add(file.normalize().toString());
         }
         args.addAll(extraArgs);
