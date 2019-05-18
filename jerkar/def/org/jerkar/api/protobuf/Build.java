@@ -5,6 +5,7 @@ import org.jerkar.api.depmanagement.JkMavenPublicationInfo;
 import org.jerkar.api.depmanagement.JkPopularModules;
 import org.jerkar.api.depmanagement.JkRepoSet;
 import org.jerkar.api.java.project.JkJavaProject;
+import org.jerkar.api.system.JkProcess;
 import org.jerkar.tool.JkInit;
 import org.jerkar.tool.JkRun;
 import org.jerkar.tool.builtins.java.JkPluginJava;
@@ -20,13 +21,24 @@ public class Build extends JkRun {
     @Override
     protected void setup() {
         JkJavaProject project = javaPlugin.getProject();
-        project.setVersionedModule( "org.jerkar:protobuf-plugin", "0.7.0-SNAPSHOT");
+        project.setVersionedModule( "org.jerkar:protobuf-plugin", "0.7.0.RC1");
         project.setDependencies(JkDependencySet.of().and(JkPopularModules.JERKAR_CORE, "0.7.0.RC1"));
         project.setMavenPublicationInfo(mavenPublication());
+        if (!project.getVersionedModule().getVersion().isSnapshot()) {
+            javaPlugin.pack.javadoc = true;
+            javaPlugin.publish.signArtifacts = true;
+            project.getMaker().getTasksForPublishing().getPostActions().chain(() -> {
+                String tagName = project.getVersionedModule().getVersion().toString();
+                JkProcess git = JkProcess.of("git").withFailOnError(true);
+                git.andParams("tag", "-a", tagName, "-m", "Release").runSync();
+                git.andParams("push").runSync();
+                git.andParams("push", "origin", tagName).runSync();
+            });
+        }
     }
 
     @Override
-    public void setupAfterPluginActivation() {
+    public void setupAfterPluginActivations() {
         JkJavaProject project = javaPlugin.getProject();
         project.getMaker().getTasksForPublishing().setPublishRepos(JkRepoSet.ofOssrhSnapshotAndRelease(ossrhUsername, ossrhPwd));
     }
