@@ -14,13 +14,11 @@ Then add the `JkImport` annotation to your Build script and get the plugin.
 
 ```java
 @JkImport("org.jerkar:protobuf-plugin:[version]")
-public class Build extends JkJavaBuild {
+public class Build extends JkRun {
+    
+    JkPluginProtocolBuffer protobufPlugin = getPlugin(JkPluginProtocolBuffer.class);
+
     ...
-	
-	@Override
-	protected void configure() {
-		this.plugins().get(JkPluginProtocolBuffer.class);
-	}
 }
 ```
 
