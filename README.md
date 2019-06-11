@@ -8,7 +8,7 @@ This provides a library to use the [protobuf](https://developers.google.com/prot
 
 First, [Make sure jerkar is installed](http://jerkar.github.io/documentation/latest/getting_started.html).
 
-[Protobuff compiler] (https://developers.google.com/protocol-buffers/docs/downloads) should be installed as well.
+[Protobuff compiler](https://developers.google.com/protocol-buffers/docs/downloads) should be installed as well.
 
 Then add the `JkImport` annotation to your Build script and get the plugin.
 
