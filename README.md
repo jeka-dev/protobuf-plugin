@@ -1,4 +1,4 @@
-[![Maven Central](https://maven-badges.herokuapp.com/maven-central/org.jerkar/protobuf-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/org.jerkar/protobuf-plugin) <br/>
+[![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.jeka/protobuf-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.jeka/protobuf-plugin) <br/>
 
 # Jerkar library for Protobuf
 
