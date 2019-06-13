@@ -32,7 +32,7 @@ public class Build extends JkCommands {
 
         // Let Git drive project version numbering
         String projectVersion = git.getVersionWithTagOrSnapshot();
-        project.setVersionedModule("dev.jeka.plugins:protobuf", projectVersion);
+        project.setVersionedModule("dev.jeka:protobuf-plugin", projectVersion);
         project.getCompileSpec().setSourceAndTargetVersion(JkJavaVersion.V8);
 
         // Make javadoc only for releases
