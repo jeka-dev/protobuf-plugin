@@ -13,16 +13,22 @@ First, [Make sure jerkar is installed](http://jerkar.github.io/documentation/lat
 Then add the `JkImport` annotation to your Build script and get the plugin.
 
 ```java
-@JkImport("org.jerkar:protobuf-plugin:[version]")
-public class Build extends JkRun {
+@JkImport("dev.jeka.plugins:protobuf:[version]")
+public class Build extends JkCommands {
     
-    JkPluginProtocolBuffer protobufPlugin = getPlugin(JkPluginProtocolBuffer.class);
+    JkPluginProtobuf protobufPlugin = getPlugin(JkPluginProtobuf.class);
 
     ...
 }
 ```
 
 That's all. Now, when building your project, files under `src/main/proto' will be compiled to java sources prior java compilation phase.
+
+You can also run the the protocol buffer compiler explicitly by executing `jeka protobuf#run`.
+
+If you don't want to use the plugin, you can invoke the protocol compiler programmatically by calling static method `JkPluginProtobuf#compile`.
+
+ 
 
 
 
