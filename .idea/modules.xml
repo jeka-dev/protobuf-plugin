@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
+<project>
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/jeka.dev.plugins.protobuf.iml" filepath="$PROJECT_DIR$/.idea/jeka.dev.plugins.protobuf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/protobuf-plugin.iml" filepath="$PROJECT_DIR$/.idea/protobuf-plugin.iml"/>
     </modules>
-  </component>
-</project>
+  </component></project>

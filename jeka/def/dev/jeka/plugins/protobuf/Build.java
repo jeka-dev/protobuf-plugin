@@ -19,7 +19,6 @@ public class Build extends JkCommands {
 
     private final JkPluginJava javaPlugin = getPlugin(JkPluginJava.class);
 
-
     @JkEnv("OSSRH_USER")
     public String ossrhUser;
 
@@ -51,7 +50,7 @@ public class Build extends JkCommands {
     }
 
     private JkMavenPublicationInfo mavenPublicationInfo() {
-        return JkMavenPublicationInfo.of("Jerkar plugin for protobuffer", "A Jerkar plugin for Google Protobuffer",
+        return JkMavenPublicationInfo.of("Jeka plugin for protobuf", "A Jeka plugin for Google Protocol buffer",
                         "https://org.jerkar/protobuf-plugin")
                 .withScm("https://github.com/jerkar/protobuf-plugin.git")
                 .andApache2License()
@@ -63,6 +62,5 @@ public class Build extends JkCommands {
         JkPluginJava javaPlugin = JkInit.instanceOf(Build.class, args).javaPlugin;
         javaPlugin.clean().pack();
     }
-
 
 }
