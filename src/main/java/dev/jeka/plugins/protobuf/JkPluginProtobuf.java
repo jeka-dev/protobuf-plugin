@@ -2,23 +2,16 @@ package dev.jeka.plugins.protobuf;
 
 import dev.jeka.core.api.file.JkPathTree;
 import dev.jeka.core.api.system.JkLog;
-import dev.jeka.core.api.system.JkProcess;
-import dev.jeka.core.api.utils.JkUtilsPath;
 import dev.jeka.core.api.utils.JkUtilsString;
 import dev.jeka.core.tool.JkCommands;
 import dev.jeka.core.tool.JkDoc;
 import dev.jeka.core.tool.JkPlugin;
 import dev.jeka.core.tool.builtins.java.JkPluginJava;
 
-import java.nio.file.Path;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @JkDoc("Compiles protocol buffer files to javaPlugin source.")
 public class JkPluginProtobuf extends JkPlugin {
-
-    private static final String PROTOC_COMMAND = "protoc";
 
     @JkDoc("Relative path of the protocol buffer files.")
     public String protoFilePath = "src/main/protobuf";
@@ -37,37 +30,17 @@ public class JkPluginProtobuf extends JkPlugin {
             "The source generation will be automatically run prior compilation phase.")
     @Override
     protected void activate() {
-        javaPlugin.getProject().getMaker().getTasksForCompilation().getPreCompile().chain(this::run);
+        javaPlugin.getProject().getMaker().getTasksForCompilation().getPreCompile().chain(this::compile);
     }
 
     @JkDoc("Compiles protocol buffer files to javaPlugin.")
-    public void run() {
+    public void compile() {
         JkLog.startTask("Compiling protocol buffer files from " + protoFilePath + " ...");
         JkPathTree protoFiles = getCommands().getBaseTree().goTo(protoFilePath);
         String[] extraArguments = JkUtilsString.translateCommandline(extraArgs);
-        compile(protoFiles, Arrays.asList(extraArguments),
+        ProtobufCompiler.compile(protoFiles, Arrays.asList(extraArguments),
                 javaPlugin.getProject().getMaker().getOutLayout().getGeneratedResourceDir());
         JkLog.endTask();
-    }
-
-    public static void compile(JkPathTree protoFiles, List<String> extraArgs, Path javaOut) {
-        JkUtilsPath.createDirectories(javaOut);
-        JkProcess.of(PROTOC_COMMAND, makeArgs(protoFiles, protoFiles.getRoot(), extraArgs, javaOut))
-                .withFailOnError(true)
-                .withLogCommand(JkLog.isVerbose())
-                .runSync();
-        JkLog.info("Protocol buffer compiled " + protoFiles.count(100000, false) + " files.");
-    }
-
-    private static String[] makeArgs(JkPathTree protoFiles, Path protoPath, List<String> extraArgs, Path javaOut) {
-        List<String> args = new ArrayList<String>();
-        args.add("--proto_path=" + protoPath.normalize().toString());
-        args.add("--java_out=" + javaOut.normalize().toString());
-        for (Path file : protoFiles.getFiles()) {
-            args.add(file.normalize().toString());
-        }
-        args.addAll(extraArgs);
-        return args.toArray(new String[0]);
     }
 
 }
