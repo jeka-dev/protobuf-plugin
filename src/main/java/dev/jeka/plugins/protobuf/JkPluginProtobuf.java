@@ -23,7 +23,7 @@ public class JkPluginProtobuf extends JkPlugin {
     private static final String PROTOC_COMMAND = "protoc";
 
     @JkDoc("Relative path of the protocol buffer files.")
-    public String protoFilePath = "src/main/proto";
+    public String protoFilePath = "src/main/protobuf";
 
     @JkDoc("Extra arguments to add to 'protoc' command.")
     public String extraArgs = "";

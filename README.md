@@ -22,7 +22,7 @@ public class Build extends JkCommands {
 }
 ```
 
-That's all. Now, when building your project, files under `src/main/proto' will be compiled to java sources prior java compilation phase.
+That's all. Now, when building your project, files under `src/main/protobuf' will be compiled to java sources prior java compilation phase.
 
 You can also run the the protocol buffer compiler explicitly by executing `jeka protobuf#run`.
 
