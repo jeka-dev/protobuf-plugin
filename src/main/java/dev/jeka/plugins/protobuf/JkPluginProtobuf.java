@@ -3,6 +3,7 @@ package dev.jeka.plugins.protobuf;
 import dev.jeka.core.api.file.JkPathTree;
 import dev.jeka.core.api.system.JkLog;
 import dev.jeka.core.api.system.JkProcess;
+import dev.jeka.core.api.utils.JkUtilsPath;
 import dev.jeka.core.api.utils.JkUtilsString;
 import dev.jeka.core.tool.JkCommands;
 import dev.jeka.core.tool.JkDoc;
@@ -36,22 +37,21 @@ public class JkPluginProtobuf extends JkPlugin {
             "The source generation will be automatically run prior compilation phase.")
     @Override
     protected void activate() {
-        javaPlugin.getProject().getMaker().getTasksForCompilation().getPreCompile().chain(() -> {
-            JkLog.startTask("Compiling protocol buffer files from " + protoFilePath + " ...");
-            run();
-            JkLog.endTask();
-        });
+        javaPlugin.getProject().getMaker().getTasksForCompilation().getPreCompile().chain(this::run);
     }
 
     @JkDoc("Compiles protocol buffer files to javaPlugin.")
     public void run() {
+        JkLog.startTask("Compiling protocol buffer files from " + protoFilePath + " ...");
         JkPathTree protoFiles = getCommands().getBaseTree().goTo(protoFilePath);
         String[] extraArguments = JkUtilsString.translateCommandline(extraArgs);
         compile(protoFiles, Arrays.asList(extraArguments),
                 javaPlugin.getProject().getMaker().getOutLayout().getGeneratedResourceDir());
+        JkLog.endTask();
     }
 
     public static void compile(JkPathTree protoFiles, List<String> extraArgs, Path javaOut) {
+        JkUtilsPath.createDirectories(javaOut);
         JkProcess.of(PROTOC_COMMAND, makeArgs(protoFiles, protoFiles.getRoot(), extraArgs, javaOut))
                 .withFailOnError(true)
                 .withLogCommand(JkLog.isVerbose())
