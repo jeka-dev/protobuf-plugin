@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Provides method to compile Google Protocol Buffer files to Java source.
  */
-public class ProtobufCompiler {
+public class JkProtobufWrapper {
 
     private static final String PROTOC_COMMAND = "protoc";
 

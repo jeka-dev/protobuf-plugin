@@ -38,7 +38,7 @@ public class JkPluginProtobuf extends JkPlugin {
         JkLog.startTask("Compiling protocol buffer files from " + protoFilePath + " ...");
         JkPathTree protoFiles = getCommands().getBaseTree().goTo(protoFilePath);
         String[] extraArguments = JkUtilsString.translateCommandline(extraArgs);
-        ProtobufCompiler.compile(protoFiles, Arrays.asList(extraArguments),
+        JkProtobufWrapper.compile(protoFiles, Arrays.asList(extraArguments),
                 javaPlugin.getProject().getMaker().getOutLayout().getGeneratedResourceDir());
         JkLog.endTask();
     }
