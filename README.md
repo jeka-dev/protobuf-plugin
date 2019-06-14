@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/jerkar/protobuf-plugin.svg?branch=master)](https://travis-ci.org/jerkar/protobuf-plugin)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.jeka/protobuf-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.jeka/protobuf-plugin) <br/>
 
 # Jerkar library for Protobuf
