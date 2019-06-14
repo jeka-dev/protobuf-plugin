@@ -1,21 +1,18 @@
 package dev.jeka.plugins.protobuf;
 
-import dev.jeka.core.api.file.JkPathMatcher;
 import dev.jeka.core.api.file.JkPathTree;
 import dev.jeka.core.api.system.JkLog;
 import dev.jeka.core.api.system.JkProcess;
-import dev.jeka.core.api.utils.JkUtilsPath;
 import dev.jeka.core.api.utils.JkUtilsString;
 import dev.jeka.core.tool.JkCommands;
 import dev.jeka.core.tool.JkDoc;
 import dev.jeka.core.tool.JkPlugin;
 import dev.jeka.core.tool.builtins.java.JkPluginJava;
 
-import java.nio.charset.Charset;
 import java.nio.file.Path;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 @JkDoc("Compiles protocol buffer files to javaPlugin source.")
 public class JkPluginProtobuf extends JkPlugin {
@@ -50,18 +47,19 @@ public class JkPluginProtobuf extends JkPlugin {
     public void run() {
         JkPathTree protoFiles = getCommands().getBaseTree().goTo(protoFilePath);
         String[] extraArguments = JkUtilsString.translateCommandline(extraArgs);
-        compile(protoFiles, generatedSourceDir(), Arrays.asList(extraArguments), charset());
+        compile(protoFiles, Arrays.asList(extraArguments),
+                javaPlugin.getProject().getMaker().getOutLayout().getGeneratedResourceDir());
     }
 
-    public static void compile(JkPathTree protoFiles, Path javaOut, List<String> extraArgs, Charset sourceCharset) {
-        JkProcess.of(PROTOC_COMMAND, makeArgs(protoFiles, protoFiles.getRoot(), javaOut, extraArgs))
+    public static void compile(JkPathTree protoFiles, List<String> extraArgs, Path javaOut) {
+        JkProcess.of(PROTOC_COMMAND, makeArgs(protoFiles, protoFiles.getRoot(), extraArgs, javaOut))
                 .withFailOnError(true)
                 .withLogCommand(JkLog.isVerbose())
                 .runSync();
         JkLog.info("Protocol buffer compiled " + protoFiles.count(100000, false) + " files.");
     }
 
-    private static String[] makeArgs(JkPathTree protoFiles, Path javaOut, Path protoPath, List<String> extraArgs) {
+    private static String[] makeArgs(JkPathTree protoFiles, Path protoPath, List<String> extraArgs, Path javaOut) {
         List<String> args = new ArrayList<String>();
         args.add("--proto_path=" + protoPath.normalize().toString());
         args.add("--java_out=" + javaOut.normalize().toString());
@@ -70,14 +68,6 @@ public class JkPluginProtobuf extends JkPlugin {
         }
         args.addAll(extraArgs);
         return args.toArray(new String[0]);
-    }
-
-    private Path generatedSourceDir() {
-        return javaPlugin.getProject().getMaker().getOutLayout().getGeneratedResourceDir();
-    }
-
-    private Charset charset() {
-        return Charset.forName(javaPlugin.getProject().getCompileSpec().getEncoding());
     }
 
 }
