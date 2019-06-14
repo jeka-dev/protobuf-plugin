@@ -1,5 +1,6 @@
 package dev.jeka.plugins.protobuf;
 
+import dev.jeka.core.api.depmanagement.JkDependencySet;
 import dev.jeka.core.api.file.JkPathTree;
 import dev.jeka.core.api.system.JkLog;
 import dev.jeka.core.api.utils.JkUtilsString;
@@ -19,6 +20,9 @@ public class JkPluginProtobuf extends JkPlugin {
     @JkDoc("Extra arguments to add to 'protoc' command.")
     public String extraArgs = "";
 
+    @JkDoc("The version of Protocol Buffer to add to the project compile classpath (only relevant id using JkPluginJava plugin.")
+    public String javaProtocolBufferVersion = "2.6.1";
+
     private final JkPluginJava javaPlugin;
 
     protected JkPluginProtobuf(JkCommands commands) {
@@ -30,7 +34,10 @@ public class JkPluginProtobuf extends JkPlugin {
             "The source generation will be automatically run prior compilation phase.")
     @Override
     protected void activate() {
-        javaPlugin.getProject().getMaker().getTasksForCompilation().getPreCompile().chain(this::compile);
+        if (getCommands().getPlugins().hasLoaded(JkPluginJava.class)) {
+            javaPlugin.getProject().getMaker().getTasksForCompilation().getPreCompile().chain(this::compile);
+            javaPlugin.getProject().addDependencies(JkDependencySet.of(protobufModuleVersion()));
+        }
     }
 
     @JkDoc("Compiles protocol buffer files to javaPlugin.")
@@ -41,6 +48,10 @@ public class JkPluginProtobuf extends JkPlugin {
         JkProtobufWrapper.compile(protoFiles, Arrays.asList(extraArguments),
                 javaPlugin.getProject().getMaker().getOutLayout().getGeneratedSourceDir());
         JkLog.endTask();
+    }
+
+    private String protobufModuleVersion() {
+        return "com.google.protobuf:protobuf-java:" + javaProtocolBufferVersion;
     }
 
 }
