@@ -37,7 +37,7 @@ public class JkPluginProtobuf extends JkPlugin {
     @Override
     protected void activate() {
         javaPlugin.getProject().getMaker().getTasksForCompilation().getPreCompile().chain(() -> {
-            JkLog.startTask("Compiling protocol buffer files...");
+            JkLog.startTask("Compiling protocol buffer files from " + protoFilePath + " ...");
             run();
             JkLog.endTask();
         });
