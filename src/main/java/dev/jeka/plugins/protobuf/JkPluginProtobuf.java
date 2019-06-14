@@ -54,28 +54,11 @@ public class JkPluginProtobuf extends JkPlugin {
     }
 
     public static void compile(JkPathTree protoFiles, Path javaOut, List<String> extraArgs, Charset sourceCharset) {
-        Path tempDir = JkUtilsPath.createTempDirectory("jkprotoc");
-        JkProcess.of(PROTOC_COMMAND, makeArgs(protoFiles, protoFiles.getRoot(), tempDir, extraArgs))
+        JkProcess.of(PROTOC_COMMAND, makeArgs(protoFiles, protoFiles.getRoot(), javaOut, extraArgs))
                 .withFailOnError(true)
+                .withLogCommand(JkLog.isVerbose())
                 .runSync();
-        final DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mmZ");
-        dateFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
-        String dateString = dateFormat.format(new Date());
-        String annotations = "@javax.annotation.Generated(value=\"com.google.protobuf\", date=\"" + dateString + "\")"
-                + "\n@SuppressWarnings(\"all\")";
-
-        JkPathTree javaFiles = JkPathTree.of(tempDir).andMatcher(JkPathMatcher.of("**/*.javaPlugin"));
-        List<Path> files = javaFiles.getFiles();
-        for (Path file : files) {
-            String source = new String(JkUtilsPath.readAllBytes(file), sourceCharset);
-            source = source.replace("public final class", annotations + "\npublic final class");
-            Path relativePath = tempDir.relativize(file).normalize();
-            Path targetPath = javaOut.resolve(relativePath);
-            JkUtilsPath.write(targetPath, source.getBytes(sourceCharset));
-            JkUtilsPath.deleteFile(file);
-        }
-        JkPathTree.of(tempDir).deleteRoot();;
-        JkLog.info("Protocol buffer compiled " + files.size() + " files.");
+        JkLog.info("Protocol buffer compiled " + protoFiles.count(100000, false) + " files.");
     }
 
     private static String[] makeArgs(JkPathTree protoFiles, Path javaOut, Path protoPath, List<String> extraArgs) {
