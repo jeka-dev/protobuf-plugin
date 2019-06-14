@@ -28,7 +28,7 @@ public class JkProtobufWrapper {
                 .withFailOnError(true)
                 .withLogCommand(JkLog.isVerbose())
                 .runSync();
-        JkLog.info("Protocol buffer compiled " + protoFiles.count(100000, false) + " files.");
+        JkLog.info("Protocol buffer compiled " + protoFiles.count(100000, false) + " files to " + javaOut + ".");
     }
 
     private static String[] makeArgs(JkPathTree protoFiles, Path protoPath, List<String> extraArgs, Path javaOut) {
