@@ -21,7 +21,7 @@ public class JkPluginProtobuf extends JkPlugin {
     public String extraArgs = "";
 
     @JkDoc("The version of Protocol Buffer to add to the project compile classpath (only relevant id using JkPluginJava plugin.")
-    public String javaProtocolBufferVersion = "2.6.1";
+    public String javaProtocolBufferVersion = "3.8.0";
 
     private final JkPluginJava javaPlugin;
 
