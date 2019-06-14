@@ -11,10 +11,25 @@ First, [Make sure jerkar is installed](http://jerkar.github.io/documentation/lat
 
 [Protobuff compiler](https://developers.google.com/protocol-buffers/docs/downloads) should be installed as well.
 
+### Programmatically
+
+You can use the protocol Buffer wrapper programmatically as a vanilla library using 
+static method `dev.jeka.plugins.protobuf.JkProtobufWrapper#compile` method. 
+
+### Command line only
+
+You can invoke this plugin from command line on a Jeka project that does not declare it.
+`jeka @dev.jeka.plugins:protobuf:[version] protobuf#compile`
+
+
+
+``````````
+
+
 Then add the `JkImport` annotation to your Build script and get the plugin.
 
 ```java
-@JkImport("dev.jeka.plugins:protobuf:[version]")
+@JkImport("")
 public class Build extends JkCommands {
     
     JkPluginProtobuf protobufPlugin = getPlugin(JkPluginProtobuf.class);
@@ -27,7 +42,7 @@ That's all. Now, when building your project, files under `src/main/protobuf' wil
 
 You can also run the the protocol buffer compiler explicitly by executing `jeka protobuf#compile`.
 
-If you don't want to use the plugin, you can invoke the protocol compiler programmatically by calling static method `JkProtobufWrapper#compile`.
+
 
  
 
