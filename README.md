@@ -19,28 +19,40 @@ static method `dev.jeka.plugins.protobuf.JkProtobufWrapper#compile` method.
 ### Command line only
 
 You can invoke this plugin from command line on a Jeka project that does not declare it.
+
+To compile .poto files
 `jeka @dev.jeka.plugins:protobuf:[version] protobuf#compile`
+or `jeka protobuf#compile` if you have declared this library in a def class `@JkImport` annotation.
 
+To get help and options :
+`jeka protobuf#compile`
 
+### Using with JkPluginJava
 
-``````````
+The most common usage is to use it along Jeka `java` plugin. For such you only have to :
 
-
-Then add the `JkImport` annotation to your Build script and get the plugin.
+* declare the plugin as shown below
+* update your IDE metadata `jeka intellij#generateIml`
+* that's all !
 
 ```java
-@JkImport("")
+@JkImport("dev.jeka.plugins:protobuf:[version]")
 public class Build extends JkCommands {
+    
+    JkPluginJavaf javaPlugin = getPlugin(JkPluginJava.class);
     
     JkPluginProtobuf protobufPlugin = getPlugin(JkPluginProtobuf.class);
 
     ...
 }
 ```
+The plugin takes care to : 
+* add a pre-compilation task for generating .java files in _jeka/output/geneated_sources/java_. _.proto_ source files are supposed to lie in _src/main/protobuf_.
+* append _com.google.protobuf:protobuf-java_ libary to project dependencies.
 
-That's all. Now, when building your project, files under `src/main/protobuf' will be compiled to java sources prior java compilation phase.
 
-You can also run the the protocol buffer compiler explicitly by executing `jeka protobuf#compile`.
+
+
 
 
 
