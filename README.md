@@ -50,8 +50,10 @@ The plugin takes care to :
 * add a pre-compilation task for generating .java files in _jeka/output/geneated_sources/java_. _.proto_ source files are supposed to lie in _src/main/protobuf_.
 * append _com.google.protobuf:protobuf-java_ libary to project dependencies.
 
+## How to build this project
 
-
+This project uses Jeka wrapper, you don't need to have Jeka installed on your machine. simply execute `./jekaw clean java#pack`
+from the root of this project.
 
 
 
