@@ -1,5 +1,3 @@
-package dev.jeka.plugins.protobuf;
-
 import dev.jeka.core.api.depmanagement.JkDependencySet;
 import dev.jeka.core.api.depmanagement.JkMavenPublicationInfo;
 import dev.jeka.core.api.depmanagement.JkRepoSet;
