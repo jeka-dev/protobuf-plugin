@@ -6,14 +6,14 @@ import dev.jeka.core.api.java.JkJavaVersion;
 import dev.jeka.core.api.java.project.JkJavaProject;
 import dev.jeka.core.api.system.JkLocator;
 import dev.jeka.core.api.tooling.JkGitWrapper;
-import dev.jeka.core.tool.JkCommands;
+import dev.jeka.core.tool.JkCommandSet;
 import dev.jeka.core.tool.JkEnv;
 import dev.jeka.core.tool.JkInit;
 import dev.jeka.core.tool.builtins.java.JkPluginJava;
 
 import static dev.jeka.core.api.depmanagement.JkJavaDepScopes.PROVIDED;
 
-public class Build extends JkCommands {
+public class Build extends JkCommandSet {
 
     private final JkPluginJava javaPlugin = getPlugin(JkPluginJava.class);
 
@@ -29,7 +29,7 @@ public class Build extends JkCommands {
         JkGitWrapper git = JkGitWrapper.of(getBaseDir());
 
         // Let Git drive project version numbering
-        String projectVersion = git.getVersionWithTagOrSnapshot();
+        String projectVersion = git.getVersionFromTags();
         project.setVersionedModule("dev.jeka:protobuf-plugin", projectVersion);
         project.getCompileSpec().setSourceAndTargetVersion(JkJavaVersion.V8);
 
@@ -56,9 +56,13 @@ public class Build extends JkCommands {
                 .andGitHubDeveloper("djeang", "djeangdev@yahoo.fr");
     }
 
+    public void cleanPack() {
+        clean();
+        javaPlugin.pack();
+    }
+
     public static void main(String[] args) {
-        JkPluginJava javaPlugin = JkInit.instanceOf(Build.class, args).javaPlugin;
-        javaPlugin.clean().pack();
+        JkInit.instanceOf(Build.class, args).cleanPack();
     }
 
 }

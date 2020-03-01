@@ -5,14 +5,13 @@ import dev.jeka.core.api.file.JkPathTree;
 import dev.jeka.core.api.java.project.JkProjectSourceLayout;
 import dev.jeka.core.api.system.JkLog;
 import dev.jeka.core.api.utils.JkUtilsString;
-import dev.jeka.core.tool.JkCommands;
+import dev.jeka.core.tool.JkCommandSet;
 import dev.jeka.core.tool.JkConstants;
 import dev.jeka.core.tool.JkDoc;
 import dev.jeka.core.tool.JkPlugin;
 import dev.jeka.core.tool.builtins.java.JkPluginJava;
 
 import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Arrays;
 
 @JkDoc("Compiles protocol buffer files to javaPlugin source.")
@@ -33,7 +32,7 @@ public class JkPluginProtobuf extends JkPlugin {
     public String javaProtocolBufferVersion = "3.8.0";
 
 
-    protected JkPluginProtobuf(JkCommands commands) {
+    protected JkPluginProtobuf(JkCommandSet commands) {
         super(commands);
     }
 
@@ -50,11 +49,11 @@ public class JkPluginProtobuf extends JkPlugin {
     @JkDoc("Compiles protocol buffer files to javaPlugin.")
     public void compile() {
         JkLog.startTask("Compiling protocol buffer files from " + protoFilePath);
-        JkPathTree protoFiles = getCommands().getBaseTree().goTo(protoFilePath);
+        JkPathTree protoFiles = getCommandSet().getBaseTree().goTo(protoFilePath);
         String[] extraArguments = JkUtilsString.translateCommandline(extraArgs);
         final Path out;
         if (javaPlugin() == null || !DEFAULT_OUT.equals(outPath)) {
-            out = getCommands().getBaseDir().resolve(outPath);
+            out = getCommandSet().getBaseDir().resolve(outPath);
         } else {
             out = javaPlugin().getProject().getMaker().getOutLayout().getGeneratedSourceDir();
         }
@@ -63,10 +62,15 @@ public class JkPluginProtobuf extends JkPlugin {
     }
 
     private JkPluginJava javaPlugin() {
-        if (getCommands().getPlugins().hasLoaded(JkPluginJava.class)) {
-            return getCommands().getPlugins().get(JkPluginJava.class);
+        if (getCommandSet().getPlugins().hasLoaded(JkPluginJava.class)) {
+            return getCommandSet().getPlugins().get(JkPluginJava.class);
         }
         return null;
+    }
+
+    @Override
+    protected String getLowestJekaCompatibleVersion() {
+        return "0.8.18.RELEASE";
     }
 
     private String protobufModuleVersion() {
