@@ -7,9 +7,7 @@ This provides a library to use the [protobuf](https://developers.google.com/prot
 
 ## How to use
 
-First, [Make sure jerkar is installed](http://jerkar.github.io/documentation/latest/getting_started.html).
-
-[Protobuff compiler](https://developers.google.com/protocol-buffers/docs/downloads) should be installed as well.
+[Protobuff compiler](https://developers.google.com/protocol-buffers/docs/downloads) must be installed on the hosting machine.
 
 ### Programmatically
 
@@ -22,7 +20,7 @@ You can invoke this plugin from command line on a Jeka project that does not dec
 
 To compile .poto files
 `jeka @dev.jeka.plugins:protobuf:[version] protobuf#compile`
-or `jeka protobuf#compile` if you have declared this library in a def class `@JkImport` annotation.
+or `jeka protobuf#compile` if you have annoted a def class with `@JkDefClasspath` annotation.
 
 To get help and options :
 `jeka protobuf#compile`
@@ -32,7 +30,7 @@ To get help and options :
 The most common usage is to use it along Jeka `java` plugin. For such you only have to :
 
 * declare the plugin as shown below
-* update your IDE metadata `jeka intellij#generateIml`
+* update your IDE metadata `jeka intellij#iml`
 * that's all !
 
 ```java
