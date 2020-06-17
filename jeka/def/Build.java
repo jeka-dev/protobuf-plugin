@@ -1,9 +1,7 @@
 import dev.jeka.core.api.depmanagement.JkDependencySet;
-import dev.jeka.core.api.depmanagement.JkMavenPublicationInfo;
 import dev.jeka.core.api.depmanagement.JkRepoSet;
-import dev.jeka.core.api.depmanagement.JkVersion;
+import dev.jeka.core.api.depmanagement.JkScope;
 import dev.jeka.core.api.java.JkJavaVersion;
-import dev.jeka.core.api.java.project.JkJavaProject;
 import dev.jeka.core.api.system.JkLocator;
 import dev.jeka.core.api.tooling.JkGitWrapper;
 import dev.jeka.core.tool.JkCommandSet;
@@ -11,11 +9,9 @@ import dev.jeka.core.tool.JkEnv;
 import dev.jeka.core.tool.JkInit;
 import dev.jeka.core.tool.builtins.java.JkPluginJava;
 
-import static dev.jeka.core.api.depmanagement.JkJavaDepScopes.PROVIDED;
-
 public class Build extends JkCommandSet {
 
-    private final JkPluginJava javaPlugin = getPlugin(JkPluginJava.class);
+    private final JkPluginJava java = getPlugin(JkPluginJava.class);
 
     @JkEnv("OSSRH_USER")
     public String ossrhUser;
@@ -25,40 +21,39 @@ public class Build extends JkCommandSet {
 
     @Override
     protected void setup() {
-        JkJavaProject project = javaPlugin.getProject();
-        JkGitWrapper git = JkGitWrapper.of(getBaseDir());
-
-        // Let Git drive project version numbering
-        String projectVersion = git.getVersionFromTags();
-        project.setVersionedModule("dev.jeka:protobuf-plugin", projectVersion);
-        project.getCompileSpec().setSourceAndTargetVersion(JkJavaVersion.V8);
+        java.getProject()
+            .getJarProduction()
+                .getDependencyManagement().addDependencies(JkDependencySet.of()
+                    .andFile(JkLocator.getJekaJarPath(), JkScope.PROVIDED)).__
+                .getCompilation()
+                    .setJavaVersion(JkJavaVersion.V8).__.__
+            .getPublication()
+                .setVersion(JkGitWrapper.of().getVersionFromTags())
+                .setModuleId("dev.jeka:protobuf-plugin")
+                .setRepos(JkRepoSet.ofOssrhSnapshotAndRelease(ossrhUser, ossrhPwd))
+                .getMavenPublication()
+                    .getPomMetadata()
+                        .getProjectInfo()
+                            .setName("Jeka plugin for protobuf")
+                            .setDescription("A Jeka plugin for Google Protocol buffer")
+                            .setUrl("https://org.jerkar/protobuf-plugin").__
+                        .getScm()
+                            .setUrl("https://github.com/jerkar/protobuf-plugin.git").__
+                        .addApache2License()
+                        .addGithubDeveloper("cuchaz", "cuchaz@gmail.com")
+                        .addGithubDeveloper("djeang", "djeangdev@yahoo.fr");
 
         // Make javadoc only for releases
-        if (!JkVersion.of(projectVersion).isSnapshot()) {
-            javaPlugin.pack.javadoc = true;
+        if (!java.getProject().getPublication().getVersion().isSnapshot()) {
+            java.pack.javadoc = true;
         }
 
-        // Use same Jeka version both for building and compiling
-        project.addDependencies(JkDependencySet.of().andFile(JkLocator.getJekaJarPath(), PROVIDED));
-
-        // Setup to publish on Maven Central
-        javaPlugin.getProject().getMaker().getTasksForPublishing()
-                .setMavenPublicationInfo(mavenPublicationInfo())
-                .setPublishRepos(JkRepoSet.ofOssrhSnapshotAndRelease(ossrhUser, ossrhPwd));
     }
 
-    private JkMavenPublicationInfo mavenPublicationInfo() {
-        return JkMavenPublicationInfo.of("Jeka plugin for protobuf", "A Jeka plugin for Google Protocol buffer",
-                        "https://org.jerkar/protobuf-plugin")
-                .withScm("https://github.com/jerkar/protobuf-plugin.git")
-                .andApache2License()
-                .andGitHubDeveloper("cuchaz", "cuchaz@gmail.com")
-                .andGitHubDeveloper("djeang", "djeangdev@yahoo.fr");
-    }
+
 
     public void cleanPack() {
-        clean();
-        javaPlugin.pack();
+        clean(); java.pack();
     }
 
     public static void main(String[] args) {
