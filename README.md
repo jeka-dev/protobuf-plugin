@@ -16,7 +16,7 @@ static method `dev.jeka.plugins.protobuf.JkProtobufWrapper#compile` method.
 
 ### Command line only
 
-You can invoke this plugin from command line on a Jeka project that does not declare it.
+You can invoke this plugin from command line on a Jeka project without declaring it.
 
 To compile .poto files
 `jeka @dev.jeka.plugins:protobuf:[version] protobuf#compile`
