@@ -23,7 +23,7 @@ To compile .poto files
 or `jeka protobuf#compile` if you have annoted a def class with `@JkDefClasspath` annotation.
 
 To get help and options :
-`jeka protobuf#compile`
+`jeka protobuf#help`
 
 ### Using with JkPluginJava
 
