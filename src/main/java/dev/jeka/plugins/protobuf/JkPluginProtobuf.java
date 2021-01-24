@@ -13,13 +13,13 @@ import dev.jeka.core.tool.builtins.java.JkPluginJava;
 import java.nio.file.Path;
 import java.util.Arrays;
 
-@JkDoc("Compiles protocol buffer files to javaPlugin source.")
+@JkDoc("Compiles protocol buffer files to java source.")
 public class JkPluginProtobuf extends JkPlugin {
 
     private static final String DEFAULT_OUT = JkConstants.OUTPUT_PATH + "/generated_sources/java";
 
     @JkDoc("Relative path of the protocol buffer files.")
-    public String protoFilePath = "src/main/protobuf";
+    public String protoFilePath = "src/main/proto";
 
     @JkDoc("Location where .java files are generated.")
     public String outPath = DEFAULT_OUT;
@@ -36,7 +36,12 @@ public class JkPluginProtobuf extends JkPlugin {
 
     @Override
     protected String getLowestJekaCompatibleVersion() {
-        return "0.9.0.M10";
+        return "0.9.3.RELEASE";
+    }
+
+    @Override
+    protected String getBreakingVersionRegistryUrl() {
+        return "https://raw.githubusercontent.com/jerkar/protobuf-plugin/master/breaking_versions.txt";
     }
 
     @JkDoc("Add protocol buffer source generation to the Java Project Maker. " +
@@ -45,7 +50,7 @@ public class JkPluginProtobuf extends JkPlugin {
     protected void activate() {
         if (javaPlugin() != null) {
             javaPlugin().getProject()
-                .getJarProduction()
+                .getConstruction()
                     .getDependencyManagement()
                         .addDependencies(JkDependencySet.of(protobufModuleVersion())).__
                     .getCompilation()
@@ -65,11 +70,11 @@ public class JkPluginProtobuf extends JkPlugin {
         } else {
             out = javaPlugin()
                     .getProject()
-                        .getJarProduction()
+                        .getConstruction()
                             .getCompilation()
                                 .getLayout().resolveGeneratedSourceDir();
         }
-        JkProtobufWrapper.compile(protoFiles, Arrays.asList(extraArguments), out);
+        JkProtobufJarWrapper.compile(protoFiles, Arrays.asList(extraArguments), out);
         JkLog.endTask();
     }
 

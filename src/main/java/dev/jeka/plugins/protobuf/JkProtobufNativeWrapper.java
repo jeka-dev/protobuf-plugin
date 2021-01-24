@@ -12,7 +12,7 @@ import java.util.List;
 /**
  * Provides method to compile Google Protocol Buffer files to Java source.
  */
-public class JkProtobufWrapper {
+public class JkProtobufNativeWrapper {
 
     private static final String PROTOC_COMMAND = "protoc";
 
@@ -31,7 +31,7 @@ public class JkProtobufWrapper {
         JkLog.info("Protocol buffer compiled " + protoFiles.count(100000, false) + " files to " + javaOut + ".");
     }
 
-    private static String[] makeArgs(JkPathTree protoFiles, Path protoPath, List<String> extraArgs, Path javaOut) {
+    static String[] makeArgs(JkPathTree protoFiles, Path protoPath, List<String> extraArgs, Path javaOut) {
         List<String> args = new ArrayList<String>();
         args.add("--proto_path=" + protoPath.normalize().toString());
         args.add("--java_out=" + javaOut.normalize().toString());

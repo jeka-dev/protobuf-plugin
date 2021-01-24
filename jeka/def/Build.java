@@ -22,9 +22,10 @@ public class Build extends JkCommandSet {
     @Override
     protected void setup() {
         java.getProject()
-            .getJarProduction()
+            .getConstruction()
                 .getDependencyManagement().addDependencies(JkDependencySet.of()
-                    .andFile(JkLocator.getJekaJarPath(), JkScope.PROVIDED)).__
+                    .andFile(JkLocator.getJekaJarPath(), JkScope.PROVIDED)
+                    .and("com.github.os72:protoc-jar:3.11.4")).__
                 .getCompilation()
                     .setJavaVersion(JkJavaVersion.V8).__.__
             .getPublication()
@@ -49,8 +50,6 @@ public class Build extends JkCommandSet {
         }
 
     }
-
-
 
     public void cleanPack() {
         clean(); java.pack();
