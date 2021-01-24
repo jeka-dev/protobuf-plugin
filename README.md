@@ -28,7 +28,18 @@ The Java source files will be generated automatically prior compiling Java sourc
 ### Programmatically
 
 You can use the protocol Buffer wrapper programmatically as a vanilla library using 
-static method `dev.jeka.plugins.protobuf.JkProtobufJarWrapper#compile` method. 
+static method `dev.jeka.plugins.protobuf.JkProtobufWrapper#compile` method. 
+
+### Command line only
+
+You can invoke this plugin from command line on a Jeka project that does not declare it.
+
+To compile .poto files
+`jeka @dev.jeka.plugins:protobuf:[version] protobuf#compile`
+or `jeka protobuf#compile` if you have annoted a def class with `@JkDefClasspath` annotation.
+
+To get help and options :
+`jeka protobuf#compile`
 
 ### Using with JkPluginJava
 
