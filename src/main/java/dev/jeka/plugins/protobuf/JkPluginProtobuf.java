@@ -47,7 +47,7 @@ public class JkPluginProtobuf extends JkPlugin {
     @JkDoc("Add protocol buffer source generation to the Java Project Maker. " +
             "The source generation will be automatically run prior compilation phase.")
     @Override
-    protected void activate() {
+    protected void afterSetup() {
         if (javaPlugin() != null) {
             javaPlugin().getProject()
                 .getConstruction()

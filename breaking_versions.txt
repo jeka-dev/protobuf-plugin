@@ -1,1 +1,3 @@
+### Means that protobuf-plugin version 1.2.0.RELEASE or below are not compatible with Jeka 0.9.0.RELEASE or higher
 1.2.0.RELEASE : 0.9.0.RELEASE
+2.0.0.RC1     : 0.9.4.RC1
