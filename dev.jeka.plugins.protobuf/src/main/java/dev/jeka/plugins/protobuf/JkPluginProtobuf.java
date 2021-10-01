@@ -1,10 +1,9 @@
 package dev.jeka.plugins.protobuf;
 
-import dev.jeka.core.api.depmanagement.JkDependencySet;
 import dev.jeka.core.api.file.JkPathTree;
 import dev.jeka.core.api.system.JkLog;
 import dev.jeka.core.api.utils.JkUtilsString;
-import dev.jeka.core.tool.JkCommandSet;
+import dev.jeka.core.tool.JkClass;
 import dev.jeka.core.tool.JkConstants;
 import dev.jeka.core.tool.JkDoc;
 import dev.jeka.core.tool.JkPlugin;
@@ -30,18 +29,8 @@ public class JkPluginProtobuf extends JkPlugin {
     @JkDoc("The version of Protocol Buffer to add to the project compile classpath (only relevant id using JkPluginJava plugin.")
     public String javaProtocolBufferVersion = "3.8.0";
 
-    protected JkPluginProtobuf(JkCommandSet commands) {
-        super(commands);
-    }
-
-    @Override
-    protected String getLowestJekaCompatibleVersion() {
-        return "0.9.3.RELEASE";
-    }
-
-    @Override
-    protected String getBreakingVersionRegistryUrl() {
-        return "https://raw.githubusercontent.com/jerkar/protobuf-plugin/master/breaking_versions.txt";
+    protected JkPluginProtobuf(JkClass buildClass) {
+        super(buildClass);
     }
 
     @JkDoc("Add protocol buffer source generation to the Java Project Maker. " +
@@ -51,10 +40,8 @@ public class JkPluginProtobuf extends JkPlugin {
         if (javaPlugin() != null) {
             javaPlugin().getProject()
                 .getConstruction()
-                    .getDependencyManagement()
-                        .addDependencies(JkDependencySet.of(protobufModuleVersion())).__
                     .getCompilation()
-                        .getBeforeCompile()
+                        .getPreCompileActions()
                             .append(this::compileProtocolBufferFiles);
         }
     }
@@ -62,11 +49,11 @@ public class JkPluginProtobuf extends JkPlugin {
     @JkDoc("Compiles protocol buffer files to java.")
     public void compileProtocolBufferFiles() {
         JkLog.startTask("Compiling protocol buffer files from " + protoFilePath);
-        JkPathTree protoFiles = getCommandSet().getBaseTree().goTo(protoFilePath);
+        JkPathTree protoFiles = getJkClass().getBaseTree().goTo(protoFilePath);
         String[] extraArguments = JkUtilsString.translateCommandline(extraArgs);
         final Path out;
         if (javaPlugin() == null || !DEFAULT_OUT.equals(outPath)) {
-            out = getCommandSet().getBaseDir().resolve(outPath);
+            out = getJkClass().getBaseDir().resolve(outPath);
         } else {
             out = javaPlugin()
                     .getProject()
@@ -79,8 +66,8 @@ public class JkPluginProtobuf extends JkPlugin {
     }
 
     private JkPluginJava javaPlugin() {
-        if (getCommandSet().getPlugins().hasLoaded(JkPluginJava.class)) {
-            return getCommandSet().getPlugins().get(JkPluginJava.class);
+        if (getJkClass().getPlugins().hasLoaded(JkPluginJava.class)) {
+            return getJkClass().getPlugin(JkPluginJava.class);
         }
         return null;
     }

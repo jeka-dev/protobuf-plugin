@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/jerkar/protobuf-plugin.svg?branch=master)](https://travis-ci.org/jerkar/protobuf-plugin)
+![Build Status](https://github.com/jerkar/protobuf-plugin/actions/workflows/push-master.yml/badge.svg)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.jeka/protobuf-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.jeka/protobuf-plugin) <br/>
 
 # Jeka library/plugin for Protobuf

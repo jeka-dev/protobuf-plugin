@@ -25,9 +25,9 @@ public class JkProtobufNativeWrapper {
     public static void compile(JkPathTree protoFiles, List<String> extraArgs, Path javaOut) {
         JkUtilsPath.createDirectories(javaOut);
         JkProcess.of(PROTOC_COMMAND, makeArgs(protoFiles, protoFiles.getRoot(), extraArgs, javaOut))
-                .withFailOnError(true)
-                .withLogCommand(JkLog.isVerbose())
-                .runSync();
+                .setFailOnError(true)
+                .setLogCommand(JkLog.isVerbose())
+                .exec();
         JkLog.info("Protocol buffer compiled " + protoFiles.count(100000, false) + " files to " + javaOut + ".");
     }
 
