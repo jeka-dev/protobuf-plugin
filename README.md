@@ -6,7 +6,7 @@
 This provides a plugin to use the [protobuf](https://developers.google.com/protocol-buffers/) compiler in your Java builds
 
 ## How to use
-
+ 
 This plugin no longer requires to have `protoc` installed on the host machine.
 
 Just declare the plugin and put protobuf files under `src/main/proto`.  
