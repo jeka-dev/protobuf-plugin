@@ -8,6 +8,7 @@ import dev.jeka.core.tool.JkEnv;
 import dev.jeka.core.tool.JkInit;
 import dev.jeka.core.tool.JkPlugin;
 import dev.jeka.core.tool.builtins.java.JkPluginJava;
+import dev.jeka.core.tool.builtins.release.JkPluginVersionFromGit;
 import dev.jeka.core.tool.builtins.repos.JkPluginGpg;
 
 public class Build extends JkClass {
@@ -20,22 +21,25 @@ public class Build extends JkClass {
     @JkEnv("OSSRH_PWD")
     public String ossrhPwd;
 
-    final JkPluginGpg gpgPlugin = getPlugin((JkPluginGpg.class));
+    final JkPluginGpg gpgPlugin = getPlugin(JkPluginGpg.class);
+
+    final JkPluginVersionFromGit versionFromGit = getPlugin(JkPluginVersionFromGit.class);
 
     @Override
     protected void setup() {
         JkPlugin.setJekaPluginCompatibilityRange(java.getProject().getConstruction().getManifest(),
-                "0.9.15.M1",
+                "0.9.15.M2",
                 "https://raw.githubusercontent.com/jerkar/protobuf-plugin.git");
         java.getProject().simpleFacade()
                 .setJavaVersion(JkJavaVersion.V8)
+                .mixResourcesAndSources()
+                .setSimpleLayout()
                 .setCompileDependencies(deps -> deps
                         .and("com.github.os72:protoc-jar:3.11.4")
                         .andFiles(JkLocator.getJekaJarPath())
                 );
 
         java.getProject().getPublication().getMaven()
-                .setVersion(JkGitProcess.of().getVersionFromTag())
                 .setModuleId("dev.jeka:protobuf-plugin")
                 .setRepos(JkRepoSet.ofOssrhSnapshotAndRelease(ossrhUser, ossrhPwd,
                         gpgPlugin.get().getSigner("")))

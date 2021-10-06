@@ -1,0 +1,1 @@
+..\dev.jeka.plugins.protobuf\jekaw %*
