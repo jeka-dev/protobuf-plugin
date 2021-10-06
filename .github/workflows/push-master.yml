@@ -28,5 +28,5 @@ jobs:
         OSSRH_PWD: ${{ secrets.OSSRH_PWD }}
         GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
       run: |
-        cd ./dev.jeka.plugins.protobug
+        cd ./dev.jeka.plugins.protobuf
         ./jekaw java#pack java#publish
