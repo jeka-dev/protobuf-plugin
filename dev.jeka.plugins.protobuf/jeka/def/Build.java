@@ -29,7 +29,7 @@ public class Build extends JkClass {
     protected void setup() {
         JkPlugin.setJekaPluginCompatibilityRange(java.getProject().getConstruction().getManifest(),
                 "0.9.15.M2",
-                "https://raw.githubusercontent.com/jerkar/protobuf-plugin.git");
+                "https://raw.githubusercontent.com/jerkar/protobuf-plugin/breaking_versions.txt");
         java.getProject().simpleFacade()
                 .setJavaVersion(JkJavaVersion.V8)
                 .mixResourcesAndSources()
