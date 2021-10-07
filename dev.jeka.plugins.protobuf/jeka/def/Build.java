@@ -35,6 +35,7 @@ public class Build extends JkClass {
                 .mixResourcesAndSources()
                 .setSimpleLayout()
                 .setCompileDependencies(deps -> deps
+                        .andFiles(JkLocator.getJekaJarPath())
                         .and("com.github.os72:protoc-jar:3.11.4")
                 );
 
