@@ -19,11 +19,20 @@ public class Build extends JkCommandSet {
     
     JkPluginProtobuf protobufPlugin = getPlugin(JkPluginProtobuf.class);
 
-    ...
+    @Override
+    protected void setup() {
+        java.getProject().simpleFacade()
+            .setCompileDependencies(deps -> deps
+                .and("com.google.protobuf:protobuf-java:3.13.0")
+            );
+        ...
+    }
 }
 ```
 The Java source files will be generated automatically prior compiling Java sources and 
  _com.google.protobuf:protobuf-java_ library will be added to project dependency. 
+ 
+See a running example [here](dev.jeka.plugins.protobuf-sample) 
 
 ### Programmatically
 
