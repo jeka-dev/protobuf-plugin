@@ -1,67 +1,59 @@
+import dev.jeka.core.api.crypto.gpg.JkGpg;
 import dev.jeka.core.api.depmanagement.JkRepoSet;
-import dev.jeka.core.api.depmanagement.JkVersion;
 import dev.jeka.core.api.java.JkJavaVersion;
+import dev.jeka.core.api.project.JkProject;
 import dev.jeka.core.api.system.JkLocator;
-import dev.jeka.core.api.tooling.JkGitProcess;
-import dev.jeka.core.tool.JkClass;
-import dev.jeka.core.tool.JkEnv;
+import dev.jeka.core.tool.JkBean;
 import dev.jeka.core.tool.JkInit;
-import dev.jeka.core.tool.JkPlugin;
-import dev.jeka.core.tool.builtins.java.JkPluginJava;
-import dev.jeka.core.tool.builtins.release.JkPluginVersionFromGit;
-import dev.jeka.core.tool.builtins.repos.JkPluginGpg;
+import dev.jeka.core.tool.JkInjectProperty;
+import dev.jeka.core.tool.JkJekaVersionCompatibilityChecker;
+import dev.jeka.core.tool.builtins.project.ProjectJkBean;
+import dev.jeka.core.tool.builtins.release.VersionFromGitJkBean;
 
-public class Build extends JkClass {
+public class Build extends JkBean {
 
-    private final JkPluginJava java = getPlugin(JkPluginJava.class);
+    private final ProjectJkBean projectJkBean = getBean(ProjectJkBean.class).configure(this::configure);
 
-    @JkEnv("OSSRH_USER")
+    @JkInjectProperty("OSSRH_USER")
     public String ossrhUser;
 
-    @JkEnv("OSSRH_PWD")
+    @JkInjectProperty("OSSRH_PWD")
     public String ossrhPwd;
 
-    final JkPluginGpg gpgPlugin = getPlugin(JkPluginGpg.class);
+    final VersionFromGitJkBean versionFromGitJkBean = getBean(VersionFromGitJkBean.class);
 
-    final JkPluginVersionFromGit versionFromGit = getPlugin(JkPluginVersionFromGit.class);
-
-    @Override
-    protected void setup() {
-        JkPlugin.setJekaPluginCompatibilityRange(java.getProject().getConstruction().getManifest(),
-                "0.9.15.M2",
+    private void configure(JkProject project) {
+        JkJekaVersionCompatibilityChecker.setCompatibilityRange(project.getConstruction().getManifest(),
+                "0.9.20.RC17",
                 "https://raw.githubusercontent.com/jerkar/protobuf-plugin/breaking_versions.txt");
-        java.getProject().simpleFacade()
-                .setJavaVersion(JkJavaVersion.V8)
+        project.simpleFacade()
+                .setJvmTargetVersion(JkJavaVersion.V8)
                 .mixResourcesAndSources()
-                .setSimpleLayout()
-                .setCompileDependencies(deps -> deps
+                .useSimpleLayout()
+                .includeJavadocAndSources(false, true)
+                .configureCompileDeps(deps -> deps
                         .andFiles(JkLocator.getJekaJarPath())
+                )
+                .configureRuntimeDeps(deps -> deps
+                        .minus(JkLocator.getJekaJarPath())
                 );
-
-        java.getProject().getPublication().getMaven()
+        project.getPublication()
                 .setModuleId("dev.jeka:protobuf-plugin")
                 .setRepos(JkRepoSet.ofOssrhSnapshotAndRelease(ossrhUser, ossrhPwd,
-                        gpgPlugin.get().getSigner("")))
-                .getPomMetadata()
-                    .getProjectInfo()
-                        .setName("Jeka plugin for protobuf")
-                        .setDescription("A Jeka plugin for Google Protocol buffer")
-                        .setUrl("https://github.com/jerkar/spring-boot-plugin").__
-                    .getScm()
-                        .setUrl("https://github.com/jerkar/spring-boot-plugin").__
-                    .addApache2License()
-                    .addGithubDeveloper("cuchaz", "cuchaz@gmail.com")
+                        JkGpg.ofStandardProject(getBaseDir()).getSigner("")))
+                .getMaven()
+                .   getPomMetadata()
+                        .setProjectName("Jeka plugin for protobuf")
+                        .setProjectDescription("A Jeka plugin for Google Protocol buffer")
+                        .setProjectUrl("https://github.com/jerkar/spring-boot-plugin")
+                        .setScmUrl("https://github.com/jerkar/spring-boot-plugin")
+                        .addApache2License()
+                        .addGithubDeveloper("cuchaz", "cuchaz@gmail.com")
                     .addGithubDeveloper("djeang", "djeangdev@yahoo.fr");
-
-        // Make javadoc only for releases
-        if (!JkVersion.of(java.getProject().getPublication().getVersion()).isSnapshot()) {
-            java.pack.javadoc = true;
-        }
-
     }
 
     public void cleanPack() {
-        clean(); java.pack();
+        clean(); projectJkBean.pack();
     }
 
     public static void main(String[] args) {
