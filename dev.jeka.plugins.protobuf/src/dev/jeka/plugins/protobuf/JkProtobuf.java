@@ -1,6 +1,6 @@
 package dev.jeka.plugins.protobuf;
 
-import dev.jeka.core.api.depmanagement.JkModuleFileProxy;
+import dev.jeka.core.api.depmanagement.JkCoordinateFileProxy;
 import dev.jeka.core.api.depmanagement.JkModuleId;
 import dev.jeka.core.api.depmanagement.JkRepoSet;
 import dev.jeka.core.api.file.JkPathTree;
@@ -20,7 +20,7 @@ public class JkProtobuf {
     public static void compile(JkPathTree protoFiles, List<String> extraArgs, Path javaOut, JkRepoSet repos,
                                String protocVersion) {
         JkUtilsPath.createDirectories(javaOut);
-        Path jar = JkModuleFileProxy.of(repos, PROTOC_JAR_MODULE + ":3.11.4").get();
+        Path jar = JkCoordinateFileProxy.of(repos, PROTOC_JAR_MODULE + ":3.11.4").get();
         JkJavaProcess javaProcess = JkJavaProcess.ofJavaJar(jar, null)
                 .addParams(extraArgs)
                 .addParams("--java_out=" + javaOut.normalize())

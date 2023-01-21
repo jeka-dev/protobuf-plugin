@@ -11,9 +11,7 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.function.Supplier;
 
-public class JkProtocSourceGenerator implements JkSourceGenerator {
-
-    private final JkProject project;
+public class JkProtocSourceGenerator extends JkSourceGenerator {
 
     private final String protoFilePath;
 
@@ -24,9 +22,9 @@ public class JkProtocSourceGenerator implements JkSourceGenerator {
     private String protocVersion;
 
     private JkProtocSourceGenerator(JkProject project, String protoFilePath) {
-        this.project = project;
+        super(project);
         this.protoFilePath = protoFilePath;
-        this.repoSupplier = () -> project.getConstruction().getDependencyResolver().getRepos();
+        this.repoSupplier = () -> project.dependencyResolver.getRepos();
     }
 
     public static JkProtocSourceGenerator of(JkProject project, String protoFilePath) {
@@ -63,7 +61,7 @@ public class JkProtocSourceGenerator implements JkSourceGenerator {
     @Override
     public void generate(Path sourceDir) {
         JkLog.startTask("Compiling protocol buffer files from " + protoFilePath);
-        JkPathTree protoFiles = JkPathTree.of(project.getBaseDir()).goTo(protoFilePath);
+        JkPathTree protoFiles = JkPathTree.of(getProject().getBaseDir()).goTo(protoFilePath);
         String[] extraArguments = JkUtilsString.translateCommandline(extraArgs);
         JkProtobuf.compile(protoFiles, Arrays.asList(extraArguments), sourceDir, repoSupplier.get(),
                 protocVersion);

@@ -11,25 +11,21 @@ import dev.jeka.plugins.protobuf.JkProtocSourceGenerator;
 @JkInjectClasspath("../dev.jeka.plugins.protobuf/jeka/output/dev.jeka.protobuf-plugin.jar")
 class Build extends JkBean {
 
-    ProjectJkBean projectJkBean = getBean(ProjectJkBean.class).configure(this::configure);
+    ProjectJkBean projectKBean = getBean(ProjectJkBean.class).configure(this::configure);
 
     private void configure(JkProject project) {
-        project.simpleFacade()
+        project.flatFacade()
             .setJvmTargetVersion(JkJavaVersion.V8)
-            .configureCompileDeps(deps -> deps
+            .configureCompileDependencies(deps -> deps
                 .and("com.google.guava:guava:21.0")
-                .and(JkProtobuf.PROTOBUF_MODULE.version("3.13.0"))
+                .and(JkProtobuf.PROTOBUF_MODULE.toCoordinate("3.13.0"))
             );
         JkSourceGenerator protocGenerator = JkProtocSourceGenerator.of(project, "src/main/proto");
-        project.getConstruction().getCompilation().addSourceGenerator(protocGenerator);
+        project.prodCompilation.addSourceGenerator(protocGenerator);
     }
 
     public void cleanPack() {
-        clean(); projectJkBean.getProject().pack();
-    }
-
-    public static void main(String[] args) {
-        JkInit.instanceOf(Build.class).cleanPack();
+        projectKBean.clean(); projectKBean.pack();
     }
 
 }
