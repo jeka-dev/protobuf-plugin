@@ -17,10 +17,12 @@ public class JkProtobuf {
 
     private static final String PROTOC_JAR_MODULE = "com.github.os72:protoc-jar";
 
+    private static final String PROTOC_JAR_VERSION = "3.11.4";
+
     public static void compile(JkPathTree protoFiles, List<String> extraArgs, Path javaOut, JkRepoSet repos,
                                String protocVersion) {
         JkUtilsPath.createDirectories(javaOut);
-        Path jar = JkCoordinateFileProxy.of(repos, PROTOC_JAR_MODULE + ":3.11.4").get();
+        Path jar = JkCoordinateFileProxy.of(repos, PROTOC_JAR_MODULE + PROTOC_JAR_VERSION).get();
         JkJavaProcess javaProcess = JkJavaProcess.ofJavaJar(jar, null)
                 .addParams(extraArgs)
                 .addParams("--java_out=" + javaOut.normalize())
@@ -35,6 +37,6 @@ public class JkProtobuf {
         }
         javaProcess.exec();
         JkLog.info("Protocol buffer compiled " +
-                protoFiles.count(100000, false) + " files to " + javaOut + ".");
+                protoFiles.count(Integer.MAX_VALUE, false) + " files to " + javaOut + ".");
     }
 }

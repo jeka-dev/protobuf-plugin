@@ -8,6 +8,12 @@ integrate it in your Jeka builds.
 
 ## How to use
 
+```java
+JkSourceGenerator protocGenerator = JkProtocSourceGenerator.of(project, "src/main/proto");
+project.prodCompilation.addSourceGenerator(protocGenerator);
+
+```
+
 See [example](./dev.jeka.plugins.protobuf-sample)
 
 ## Testimonial
@@ -29,3 +35,8 @@ On windows
 ```shell
 jekaw build
 ```
+
+## How to release
+
+Commit with a comment formatted as *Release:X.X.X* and push.
+

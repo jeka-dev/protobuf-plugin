@@ -46,7 +46,7 @@ public class JkProtocSourceGenerator extends JkSourceGenerator {
     }
 
     /**
-     * The effective version of the compiler to be choosed from https://mvnrepository.com/artifact/com.google.protobuf/protoc
+     * The effective version of the compiler to be chosen from https://mvnrepository.com/artifact/com.google.protobuf/protoc
      */
     public JkProtocSourceGenerator setProtocVersion(String protocVersion) {
         this.protocVersion = protocVersion;

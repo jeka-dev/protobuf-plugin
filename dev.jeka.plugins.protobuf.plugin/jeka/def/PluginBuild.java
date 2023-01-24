@@ -3,12 +3,14 @@ import dev.jeka.core.api.depmanagement.JkRepoSet;
 import dev.jeka.core.api.java.JkJavaVersion;
 import dev.jeka.core.api.project.JkProject;
 import dev.jeka.core.api.system.JkLocator;
+import dev.jeka.core.api.tooling.JkGitProcess;
 import dev.jeka.core.tool.JkBean;
 import dev.jeka.core.tool.JkInjectProperty;
 import dev.jeka.core.tool.JkJekaVersionCompatibilityChecker;
+import dev.jeka.core.tool.builtins.git.GitJkBean;
 import dev.jeka.core.tool.builtins.project.ProjectJkBean;
 
-public class PluginBuild extends JkBean {
+class PluginBuild extends JkBean {
 
     private final ProjectJkBean projectJkBean = getBean(ProjectJkBean.class).configure(this::configure);
 
@@ -20,7 +22,7 @@ public class PluginBuild extends JkBean {
 
     private void configure(JkProject project) {
         JkJekaVersionCompatibilityChecker.setCompatibilityRange(project.packaging.manifest,
-                "0.10.5",
+                "0.10.6",
                 "https://raw.githubusercontent.com/jerkar/protobuf-plugin/breaking_versions.txt");
         project.flatFacade()
             .setJvmTargetVersion(JkJavaVersion.V8)
@@ -34,6 +36,7 @@ public class PluginBuild extends JkBean {
             );
         project.publication
             .setModuleId("dev.jeka:protobuf-plugin")
+            .setVersion(getBean(GitJkBean.class).projectVersionSupplier::versionAsText)
             .setRepos(JkRepoSet.ofOssrhSnapshotAndRelease(ossrhUser, ossrhPwd,
                     JkGpg.ofStandardProject(getBaseDir()).getSigner("")))
             .maven.pomMetadata
@@ -46,8 +49,9 @@ public class PluginBuild extends JkBean {
                     .addGithubDeveloper("djeang", "djeangdev@yahoo.fr");
     }
 
-    public void cleanPack() {
+    void cleanPack() {
         projectJkBean.clean(); projectJkBean.pack();
     }
+
 
 }

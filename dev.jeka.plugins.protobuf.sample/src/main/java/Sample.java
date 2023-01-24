@@ -5,5 +5,6 @@ public class Sample {
                 .setQuery("foo")
                 .setPageNumber(12)
                 .build();
+        System.out.println(searchRequest);
     }
 }

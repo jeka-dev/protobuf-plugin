@@ -18,6 +18,8 @@ class SampleBuild extends JkBean {
                 .and("com.google.guava:guava:21.0")
                 .and("com.google.protobuf:protobuf-java:3.21.12")
             );
+        project.packaging.manifest.addMainClass("Sample");
+        project.artifactProducer.putMainArtifact(project.packaging::createFatJar);
         JkSourceGenerator protocGenerator = JkProtocSourceGenerator.of(project, "src/main/proto");
         project.prodCompilation.addSourceGenerator(protocGenerator);
     }
