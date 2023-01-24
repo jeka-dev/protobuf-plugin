@@ -22,7 +22,7 @@ public class JkProtobuf {
     public static void compile(JkPathTree protoFiles, List<String> extraArgs, Path javaOut, JkRepoSet repos,
                                String protocVersion) {
         JkUtilsPath.createDirectories(javaOut);
-        Path jar = JkCoordinateFileProxy.of(repos, PROTOC_JAR_MODULE + PROTOC_JAR_VERSION).get();
+        Path jar = JkCoordinateFileProxy.of(repos, PROTOC_JAR_MODULE + ":" + PROTOC_JAR_VERSION).get();
         JkJavaProcess javaProcess = JkJavaProcess.ofJavaJar(jar, null)
                 .addParams(extraArgs)
                 .addParams("--java_out=" + javaOut.normalize())
