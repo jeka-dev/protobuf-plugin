@@ -8,7 +8,7 @@ import dev.jeka.core.tool.JkInjectProperty;
 import dev.jeka.core.tool.JkJekaVersionCompatibilityChecker;
 import dev.jeka.core.tool.builtins.project.ProjectJkBean;
 
-public class Build extends JkBean {
+public class PluginBuild extends JkBean {
 
     private final ProjectJkBean projectJkBean = getBean(ProjectJkBean.class).configure(this::configure);
 
@@ -43,7 +43,7 @@ public class Build extends JkBean {
                     .setScmUrl("https://github.com/jerkar/spring-boot-plugin")
                     .addApache2License()
                     .addGithubDeveloper("cuchaz", "cuchaz@gmail.com")
-                .addGithubDeveloper("djeang", "djeangdev@yahoo.fr");
+                    .addGithubDeveloper("djeang", "djeangdev@yahoo.fr");
     }
 
     public void cleanPack() {

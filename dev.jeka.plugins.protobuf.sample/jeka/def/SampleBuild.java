@@ -2,14 +2,12 @@ import dev.jeka.core.api.java.JkJavaVersion;
 import dev.jeka.core.api.project.JkProject;
 import dev.jeka.core.api.project.JkSourceGenerator;
 import dev.jeka.core.tool.JkBean;
-import dev.jeka.core.tool.JkInit;
 import dev.jeka.core.tool.JkInjectClasspath;
 import dev.jeka.core.tool.builtins.project.ProjectJkBean;
-import dev.jeka.plugins.protobuf.JkProtobuf;
 import dev.jeka.plugins.protobuf.JkProtocSourceGenerator;
 
-@JkInjectClasspath("../dev.jeka.plugins.protobuf/jeka/output/dev.jeka.protobuf-plugin.jar")
-class Build extends JkBean {
+@JkInjectClasspath("../dev.jeka.plugins.protobuf.plugin/jeka/output/dev.jeka.protobuf-plugin.jar")
+class SampleBuild extends JkBean {
 
     ProjectJkBean projectKBean = getBean(ProjectJkBean.class).configure(this::configure);
 
@@ -18,7 +16,7 @@ class Build extends JkBean {
             .setJvmTargetVersion(JkJavaVersion.V8)
             .configureCompileDependencies(deps -> deps
                 .and("com.google.guava:guava:21.0")
-                .and(JkProtobuf.PROTOBUF_MODULE.toCoordinate("3.13.0"))
+                .and("com.google.protobuf:protobuf-java:3.21.12")
             );
         JkSourceGenerator protocGenerator = JkProtocSourceGenerator.of(project, "src/main/proto");
         project.prodCompilation.addSourceGenerator(protocGenerator);

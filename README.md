@@ -1,4 +1,4 @@
-![Build Status](https://github.com/jerkar/protobuf-plugin/actions/workflows/push-master.yml/badge.svg)
+![SampleBuild Status](https://github.com/jerkar/protobuf-plugin/actions/workflows/push-master.yml/badge.svg)
 [![Maven Central](https://maven-badges.herokuapp.com/maven-central/dev.jeka/protobuf-plugin/badge.svg)](https://maven-badges.herokuapp.com/maven-central/dev.jeka/protobuf-plugin) <br/>
 
 # Jeka library/plugin for Protobuf
@@ -14,4 +14,18 @@ See [example](./dev.jeka.plugins.protobuf-sample)
 
 This plugin make use of https://github.com/os72/protoc-jar library.
 
+# Developer Notes
 
+## How to build
+
+To build both plugin and sample, execute : 
+
+On Linux or MacOS
+```shell
+./jekaw build
+```
+
+On windows
+```shell
+jekaw build
+```
